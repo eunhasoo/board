@@ -16,7 +16,7 @@
 
     <insert id="save" useGeneratedKeys="true" keyColumn="id" parameterType="com.eunhasoo.board.controller.dto.UserForm">
         insert into user(loginId, password, `name`, email, userType, enabled)
-        value(#{username}, #{password}, #{name}, #{email}, 'USER', 0)
+        value(#{username}, #{password}, #{name}, #{email}, 'MEMBER', 0)
     </insert>
 
 </mapper>

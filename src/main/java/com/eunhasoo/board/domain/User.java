@@ -13,7 +13,7 @@ public class User {
     private String password;
     private String email;
     private String name;
-    private String userType;
+    private String userType; // ADMIN or MEMBER
     private boolean enable;
 
     private List<Article> articles;
