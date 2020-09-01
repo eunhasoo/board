@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+          crossorigin="anonymous">
+
+    <script src="/js/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
+
+    <script src="/js/summernote/summernote-lite.js"></script>
+
+    <!-- include summernote-ko-KR -->
+    <script src="/css/summernote/lang/summernote-ko-KR.js"></script>
+
+    <title>Scrapbook</title>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div class="container mt-4">
+    <h4></h4>
+
+    <form method="POST" th:action="@{/article/edit/{id}(id=${form.articleId})}" th:object="${form}">
+        <input type="hidden" th:field="*{articleId}">
+
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <select name="boardId" id="boardId" class="form-control">
+                    <option th:each="board : ${boards}"
+                            th:with="selected = (${board.id} == ${form.boardId}),
+                                     value = ${board.id},
+                                     text = ${board.boardName}"
+                            th:selected="${selected}" th:text="${text}" th:value="${value}"/>
+                </select>
+            </div>
+            <div class="form-group col-md-10">
+                <input type="text" th:field="*{title}" class="form-control"/>
+            </div>
+        </div>
+
+        <textarea id="summernote" th:field="*{body}"></textarea>
+
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-danger">등록</button>
+            <a href="/home"><button type="button" class="btn btn-outline-dark">목록으로</button></a>
+        </div>
+
+    </form>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+
+<script>
+    $(function() {
+        $('#summernote').summernote({
+            height: 500,
+            lang: 'ko-KR'
+        });
+    });
+</script>

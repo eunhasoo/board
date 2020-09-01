@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    include:
+      - db
+
+mybatis:
+  mapper-locations: classpath*:/mapper/*.xml
+  type-aliases-package: com.eunhasoo.board.domain
+
+logging:
+  level:
+    com.eunhasoo.board.mapper: DEBUG
+    jdbc.sqlonly: DEBUG

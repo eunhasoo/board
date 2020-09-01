@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="footer" th:fragment="footer">
+    <hr/>
+    <p>&copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}"></span> eunhasoo</p>
+</div>

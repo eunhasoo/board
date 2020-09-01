@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eunhasoo.board.mapper.UserMapper">
+
+    <select id="findIdByName" resultType="int">
+        SELECT id FROM user
+        WHERE name LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <select id="findById" resultType="User">
+        SELECT loginId, password, userType
+        FROM user
+        WHERE loginId = #{loginId}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyColumn="id" parameterType="com.eunhasoo.board.controller.dto.UserForm">
+        insert into user(loginId, password, `name`, email, userType, enabled)
+        value(#{username}, #{password}, #{name}, #{email}, 'USER', 0)
+    </insert>
+
+</mapper>

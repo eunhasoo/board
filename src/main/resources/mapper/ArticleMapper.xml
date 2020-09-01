@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.eunhasoo.board.mapper.ArticleMapper">
+
+    <select id="findAll" resultMap="userResultMap">
+        SELECT a.id, a.no, a.createDate, a.title, u.name
+        FROM article a INNER JOIN user u ON a.userId = u.id
+        <if test="boardId != 0">
+            INNER JOIN board b ON a.boardId = b.id
+            WHERE b.id = #{boardId}
+        </if>
+        ORDER BY a.id desc;
+    </select>
+
+    <select id="findOne" resultMap="userBoardResultMap">
+        SELECT a.id, a.no, a.createDate, a.title, a.body, userId, u.name, b.boardName, b.id as boardId
+        FROM article a INNER JOIN user u ON a.userId = u.id
+        INNER JOIN board b ON a.boardId = b.id
+        WHERE a.id = #{articleId}
+    </select>
+
+    <select id="findAllByBoardId" resultMap="userBoardResultMap">
+        SELECT a.id, a.no, a.createDate, a.title, a.body, u.name, b.boardName
+        FROM article a INNER JOIN user u ON a.userId = u.id
+        ORDER BY a.no desc;
+    </select>
+
+    <select id="findLastAddedNo" resultType="Integer">
+        SELECT id FROM article
+        WHERE boardId = #{boardId}
+        ORDER BY id desc
+        LIMIT 0, 1;
+    </select>
+
+    <select id="findByQueries" resultType="com.eunhasoo.board.controller.dto.SearchResult">
+        SELECT DISTINCT a.createDate, u.name as userName, a.id, title, body FROM article a
+        <if test="boardId != 0">
+            inner join board b ON a.boardId = #{boardId}
+        </if>
+        RIGHT JOIN user u ON a.userId = u.id
+        <where>
+            <if test="boardId != 0">
+                AND a.boardId = #{boardId}
+            </if>
+            <if test="idx != null and idx == 0">
+                AND INSTR(title, #{qr}) > 0
+                OR INSTR(body, #{qr}) > 0
+            </if>
+            <if test="idx != null and idx == 1">
+                AND INSTR(title, #{qr}) > 0
+            </if>
+            <if test="userIdList != null and userIdList.size() > 0">
+                AND u.id IN
+                <foreach collection="userIdList" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="Article">
+        INSERT INTO article (`no`, createDate, modifiedDate, title, body, userId, boardId)
+        VALUES (#{no}, now(), now(), #{title}, #{body}, #{userId}, #{boardId})
+    </insert>
+
+    <update id="update">
+        UPDATE article
+        SET title = #{title},
+            body = #{body},
+            <if test="boardId != null">
+                boardId = #{boardId},
+                `no` = #{no},
+            </if>
+            modifiedDate = now()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM article
+        WHERE id = #{id}
+    </delete>
+
+    <resultMap id="userResultMap" type="Article">
+        <id property="id" column="id"/>
+        <result property="no" column="no"/>
+        <result property="createDate" column="createDate"/>
+        <result property="title" column="title"/>
+        <association property="user" javaType="User">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="userBoardResultMap" type="Article">
+        <id property="id" column="id"/>
+        <result property="no" column="no"/>
+        <result property="body" column="body"/>
+        <result property="createDate" column="createDate"/>
+        <result property="title" column="title"/>
+        <result property="userId" column="userId"/>
+        <result property="boardId" column="boardId"/>
+        <association property="user" javaType="User">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="board" javaType="Board">
+            <id property="id" column="boardId"/>
+            <result property="boardName" column="boardName"/>
+        </association>
+    </resultMap>
+
+</mapper>
