@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" th:fragment="bodyHeader">
     <a class="navbar-brand" href="/">Scrapbook</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,10 +31,15 @@
         <form class="form-inline my-2 my-lg-0" action="/article/search">
             <input type="hidden" name="bId" value="0">
             <input type="hidden" name="idx" value="0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="qr">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="qr" required>
             <button class="btn btn-outline-success my-2 mr-4 my-sm-0" type="submit">Search</button>
         </form>
-        <a href="/article/new"><button type="button" class="btn btn-light mr-1 ">Write</button></a>
-        <a href="/member/signIn"><button type="button" class="btn btn-secondary">Login</button></a>
+
+        <a sec:authorize="isAnonymous()" href="/member/signUp"><button type="button" class="btn btn-light mr-1">Sign Up</button></a>
+        <a sec:authorize="isAnonymous()" href="/member/signIn"><button type="button" class="btn btn-secondary">Sign In</button></a>
+        <a sec:authorize="isAuthenticated()" href="/article/new"><button type="button" class="btn btn-light mr-1">Write</button></a>
+        <form sec:authorize="isAuthenticated()" method="POST" class="form-inline my-2 my-lg-0" th:action="@{/member/signOut}">
+            <button sec:authorize="isAuthenticated()" type="submit" class="btn btn-secondary">Sign Out</button>
+        </form>
     </div>
 </nav>
