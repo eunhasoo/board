@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div class="container p-5">
+
+    <div class="jumbotron">
+        <h1 class="display-4">Error</h1>
+        <p class="lead">죄송합니다. 원하는 페이지를 찾을 수 없습니다.</p>
+        <hr class="my-4">
+        <p>Sorry, we couldn't find the page you were looking for.</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg" href="/" role="button">Go Home</a>
+        </p>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div>
+</body>
