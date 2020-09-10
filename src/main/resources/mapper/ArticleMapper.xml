@@ -14,22 +14,16 @@
     </select>
 
     <select id="findOne" resultMap="userBoardResultMap">
-        SELECT a.id, a.no, a.createDate, a.title, a.body, userId, u.name, b.boardName, b.id as boardId
+        SELECT a.id, a.no, a.createDate, a.title, a.body, u.loginId, userId, u.name, b.boardName, b.id as boardId
         FROM article a INNER JOIN user u ON a.userId = u.id
         INNER JOIN board b ON a.boardId = b.id
         WHERE a.id = #{articleId}
     </select>
 
-    <select id="findAllByBoardId" resultMap="userBoardResultMap">
-        SELECT a.id, a.no, a.createDate, a.title, a.body, u.name, b.boardName
-        FROM article a INNER JOIN user u ON a.userId = u.id
-        ORDER BY a.no desc;
-    </select>
-
     <select id="findLastAddedNo" resultType="Integer">
-        SELECT id FROM article
+        SELECT `no` FROM article
         WHERE boardId = #{boardId}
-        ORDER BY id desc
+        ORDER BY no desc
         LIMIT 0, 1;
     </select>
 
@@ -64,16 +58,16 @@
         VALUES (#{no}, now(), now(), #{title}, #{body}, #{userId}, #{boardId})
     </insert>
 
-    <update id="update">
+    <update id="update" parameterType="com.eunhasoo.board.controller.dto.ArticleForm">
         UPDATE article
         SET title = #{title},
             body = #{body},
-            <if test="boardId != null">
+            <if test="no != 0">
                 boardId = #{boardId},
                 `no` = #{no},
             </if>
             modifiedDate = now()
-        WHERE id = #{id}
+        WHERE id = #{articleId}
     </update>
 
     <delete id="delete">
@@ -99,9 +93,9 @@
         <result property="createDate" column="createDate"/>
         <result property="title" column="title"/>
         <result property="userId" column="userId"/>
-        <result property="boardId" column="boardId"/>
         <association property="user" javaType="User">
             <id property="id" column="id"/>
+            <result property="loginId" column="loginId"/>
             <result property="name" column="name"/>
         </association>
         <association property="board" javaType="Board">

@@ -3,10 +3,15 @@ package com.eunhasoo.board.controller;
 import com.eunhasoo.board.controller.dto.ArticleForm;
 import com.eunhasoo.board.controller.dto.SearchQueries;
 import com.eunhasoo.board.domain.Article;
+import com.eunhasoo.board.domain.Comment;
+import com.eunhasoo.board.domain.Role;
+import com.eunhasoo.board.exception.UnAuthorizedException;
 import com.eunhasoo.board.service.ArticleService;
 import com.eunhasoo.board.service.BoardService;
 import com.eunhasoo.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
+
 @RequiredArgsConstructor
 @Controller
+@Slf4j
 public class ArticleController {
 
     private final ArticleService articleService;
@@ -25,13 +33,14 @@ public class ArticleController {
     @GetMapping("/article/{articleId}")
     public String findOne(@PathVariable int articleId, Model model) {
         model.addAttribute("article", articleService.findOne(articleId));
+        model.addAttribute("comment", new Comment());
         model.addAttribute("comments", commentService.findAll(articleId));
         model.addAttribute("commentCount", commentService.count(articleId));
         return "articles/viewArticle";
     }
 
     @GetMapping("/article/board/{boardId}")
-    public String findAll(@PathVariable int boardId, Model model) {
+    public String findByBoard(@PathVariable int boardId, Model model) {
         model.addAttribute("articles", articleService.findAll(boardId));
         return "list";
     }
@@ -44,15 +53,14 @@ public class ArticleController {
     }
 
     @PostMapping("/article/new")
-    public String createArticle(ArticleForm form) {
-        int articleId = articleService.save(form);
+    public String createArticle(ArticleForm form, Principal principal) {
+        int articleId = articleService.save(form, principal.getName());
         return "redirect:/article/" + articleId;
     }
 
     @GetMapping("/article/edit/{articleId}")
-    public String editForm(@PathVariable int articleId, Model model) {
-        Article article = articleService.findOne(articleId);
-
+    public String editForm(@PathVariable int articleId, Model model, Authentication authentication) {
+        Article article = getArticle(articleId, authentication);
         ArticleForm form = new ArticleForm();
         form.setArticleId(article.getId());
         form.setBoardId(article.getBoard().getId());
@@ -64,14 +72,17 @@ public class ArticleController {
     }
 
     @PostMapping("/article/edit/{articleId}")
-    public String editArticle(@PathVariable int articleId, ArticleForm form) {
-        articleService.update(form);
+    public String editArticle(@PathVariable int articleId, ArticleForm form, Authentication authentication) {
+        if (getArticle(articleId, authentication) != null) {
+            articleService.update(form);
+        }
         return "redirect:/article/" + articleId;
     }
 
     @PostMapping("/article/delete/{articleId}")
-    public String deleteArticle(@PathVariable int articleId) {
-        articleService.delete(articleId);
+    public String deleteArticle(@PathVariable int articleId, Authentication authentication) {
+        Article article = getArticle(articleId, authentication);
+        articleService.delete(article.getId());
         return "redirect:/home";
     }
 
@@ -90,6 +101,18 @@ public class ArticleController {
         model.addAttribute("articles", articleService.findByQueries(queries));
         model.addAttribute("queries", queries);
         return "articles/searchArticle";
+    }
+
+    public Article getArticle(int articleId, Authentication authentication) {
+        Article article = articleService.findOne(articleId);
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.getValue()));
+        if (!isAdmin) {
+            if (!authentication.getName().equals(article.getUser().getLoginId())) {
+                throw new UnAuthorizedException("수정 권한이 없습니다.");
+            }
+        }
+        return article;
     }
 
 }

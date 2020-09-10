@@ -4,7 +4,9 @@ import com.eunhasoo.board.controller.dto.ArticleForm;
 import com.eunhasoo.board.controller.dto.SearchQueries;
 import com.eunhasoo.board.controller.dto.SearchResult;
 import com.eunhasoo.board.domain.Article;
+import com.eunhasoo.board.domain.User;
 import com.eunhasoo.board.mapper.ArticleMapper;
+import com.eunhasoo.board.mapper.CommentMapper;
 import com.eunhasoo.board.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ public class ArticleService {
 
     private final ArticleMapper articleMapper;
     private final UserMapper userMapper;
+    private final CommentMapper commentMapper;
 
     public List<Article> findAll(int boardId) {
         return articleMapper.findAll(boardId);
@@ -35,11 +38,12 @@ public class ArticleService {
     }
 
     @Transactional
-    public int save(ArticleForm form) {
+    public int save(ArticleForm form, String loginId) {
+        User user = userMapper.findById(loginId);
         Article article = new Article();
         article.setBody(form.getBody());
         article.setTitle(form.getTitle());
-        article.setUserId(form.getUserId());
+        article.setUserId(user.getId());
         article.setBoardId(form.getBoardId());
         article.setNo(articleMapper.findLastAddedNo(form.getBoardId()));
         articleMapper.save(article);
@@ -47,25 +51,27 @@ public class ArticleService {
     }
 
     @Transactional
-    public void delete(int articleId) {
-        articleMapper.delete(articleId);
+    public int delete(int articleId) {
+        commentMapper.deleteByArticleId(articleId);
+        return articleMapper.delete(articleId);
     }
 
     @Transactional
-    public void update(ArticleForm form) {
+    public int update(ArticleForm form) {
         Article origin = articleMapper.findOne(form.getArticleId());
-        Integer no = null, boardId = null;
         // 게시판이 변경되면 새로운 글번호가 부여된다
         if (origin.getBoard().getId() != form.getBoardId()) {
-            no = findLastAddedNo(form.getBoardId());
-            boardId = form.getBoardId();
+            form.setNo(findLastAddedNo(form.getBoardId()));
+        } else {
+            form.setNo(0);
         }
-        articleMapper.update(boardId, no, form.getTitle(), form.getBody(), form.getArticleId());
+
+        return articleMapper.update(form);
     }
 
     public List<SearchResult> findByQueries(SearchQueries query) {
         Integer idx = query.getIdx();
-        if (idx != null && idx == 2) {
+        if (idx == 2) {
             query.setUserIdList(userMapper.findIdByName(query.getQr()));
         }
         return articleMapper.findByQueries(query);

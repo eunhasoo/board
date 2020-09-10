@@ -9,12 +9,12 @@
     </select>
 
     <select id="findById" resultType="User">
-        SELECT loginId, password, userType
+        SELECT loginId, password, userType, id
         FROM user
         WHERE loginId = #{loginId}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyColumn="id" parameterType="com.eunhasoo.board.controller.dto.UserForm">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.eunhasoo.board.controller.dto.UserForm">
         insert into user(loginId, password, `name`, email, userType, enabled)
         value(#{username}, #{password}, #{name}, #{email}, 'MEMBER', 0)
     </insert>

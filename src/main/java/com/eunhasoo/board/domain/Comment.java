@@ -14,5 +14,8 @@ public class Comment {
     private LocalDateTime modifiedDate;
 
     private Article article;
+    private int articleId;
+
     private User user;
+    private int userId;
 }

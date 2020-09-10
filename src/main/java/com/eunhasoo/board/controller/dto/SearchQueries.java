@@ -2,8 +2,6 @@ package com.eunhasoo.board.controller.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import java.util.List;
 
 @Getter

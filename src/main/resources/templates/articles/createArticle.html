@@ -6,24 +6,13 @@
     <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
           crossorigin="anonymous">
     <link rel="stylesheet" href="/css/summernote/summernote-lite.css">
-
-    <script src="/js/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="/js/bootstrap/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
-
-    <script src="/js/summernote/summernote-lite.js"></script>
-
-    <!-- include summernote-ko-KR -->
-    <script src="/css/summernote/lang/summernote-ko-KR.js"></script>
-
     <title>Scrapbook</title>
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
 <div class="container mt-4">
-    <form method="POST" action="/article/new" th:object="${form}">
-        <input type="hidden" th:field="*{userId}">
-
+    <form method="POST" th:action="@{/article/new}" th:object="${form}">
         <div class="form-row">
             <div class="form-group col-md-2">
                 <select name="boardId" id="boardId" class="form-control">
@@ -48,6 +37,14 @@
 
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
+
+<script src="/js/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="/js/bootstrap/bootstrap.bundle.min.js" integrity="" crossorigin="anonymous"></script>
+
+<script src="/js/summernote/summernote-lite.js"></script>
+
+<!-- include summernote-ko-KR -->
+<script src="/css/summernote/lang/summernote-ko-KR.js"></script>
 
 <script>
     $(function() {

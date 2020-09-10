@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArticleForm {
+    private int no;
     private int userId;
     private int articleId;
     private int boardId;
