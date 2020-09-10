@@ -14,7 +14,17 @@
         SELECT COUNT(*) FROM comment
         WHERE articleId = #{articleId}
     </select>
-    
+
+    <delete id="deleteByArticleId">
+        DELETE FROM comment
+        where articleId = #{articleId}
+    </delete>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (articleId, userId, body, createDate, modifiedDate)
+        VALUES (#{articleId}, #{userId}, #{body}, now(), now())
+    </insert>
+
     <resultMap id="userResultMap" type="Comment">
         <id property="id" column="id" />
         <result property="modifiedDate" column="modifiedDate"/>

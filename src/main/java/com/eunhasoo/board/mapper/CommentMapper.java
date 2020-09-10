@@ -8,5 +8,7 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
     List<Comment> findAllByArticleId(int articleId);
+    int deleteByArticleId(int articleId);
     int count(int articleId);
+    int save(Comment comment);
 }
