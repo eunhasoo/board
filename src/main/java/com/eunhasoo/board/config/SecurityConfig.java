@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @AllArgsConstructor
 @Configuration
@@ -28,22 +29,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/home", "/article/board/**", "/article/{\\d+}", "/member/signUp").permitAll()
+                .antMatchers("/article/edit/**", "/article/create/**", "/comment/new/**").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/member/info").hasRole("MEMBER")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/member/signIn")
+                .successHandler(successHandler())
                 .permitAll()
                 .and()
                 .logout()
+                .logoutUrl("/member/signOut")
+                .logoutSuccessUrl("/")
                 .permitAll();
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
+    }
+
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomLoginSuccessHandler("/defaultUrl");
     }
 
 }
