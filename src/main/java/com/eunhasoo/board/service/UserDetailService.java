@@ -25,9 +25,13 @@ public class UserDetailService implements UserDetailsService {
 
     @Transactional
     public int joinUser(UserForm form) {
+        User user = new User();
+        user.setEmail(form.getEmail());
+        user.setLoginId(form.getUsername());
+        user.setName(form.getName());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        form.setPassword(passwordEncoder.encode(form.getPassword()));
-        return userMapper.save(form);
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
+        return userMapper.save(user);
     }
 
     @Override
@@ -42,5 +46,13 @@ public class UserDetailService implements UserDetailsService {
         }
 
         return new org.springframework.security.core.userdetails.User(user.getLoginId(), user.getPassword(), authorities);
+    }
+
+    public User findUserById(String userId) {
+        return userMapper.findById(userId);
+    }
+
+    public User findUserByEmail(String email) {
+        return userMapper.findByEmail(email);
     }
 }

@@ -14,9 +14,15 @@
         WHERE loginId = #{loginId}
     </select>
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.eunhasoo.board.controller.dto.UserForm">
-        insert into user(loginId, password, `name`, email, userType, enabled)
-        value(#{username}, #{password}, #{name}, #{email}, 'MEMBER', 0)
+    <select id="findByEmail" resultType="User">
+        SELECT id
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="User">
+        INSERT INTO user(loginId, password, `name`, email, userType, enabled)
+        VALUES (#{loginId}, #{password}, #{name}, #{email}, 'MEMBER', 0)
     </insert>
 
 </mapper>

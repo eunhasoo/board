@@ -29,21 +29,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/home", "/article/board/**", "/article/{\\d+}", "/member/signUp").permitAll()
+                .antMatchers("/home", "/article/board/**", "/article/{\\d+}", "/member/signUp", "/member/signUpSuccess").permitAll()
                 .antMatchers("/article/edit/**", "/article/create/**", "/comment/new/**").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/member/info").hasRole("MEMBER")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/member/signIn")
-                .successHandler(successHandler())
-                .permitAll()
+                    .formLogin()
+                    .loginPage("/member/signIn")
+                    .successHandler(successHandler())
+                    .permitAll()
                 .and()
-                .logout()
-                .logoutUrl("/member/signOut")
-                .logoutSuccessUrl("/")
-                .permitAll();
+                    .logout()
+                    .logoutUrl("/member/signOut")
+                    .logoutSuccessUrl("/")
+                    .permitAll();
     }
 
     @Override
@@ -51,10 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 
-
     @Bean
     public AuthenticationSuccessHandler successHandler() {
-        return new CustomLoginSuccessHandler("/defaultUrl");
+        return new CustomLoginSuccessHandler("/");
     }
 
 }

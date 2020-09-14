@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -72,7 +73,12 @@ public class ArticleService {
     public List<SearchResult> findByQueries(SearchQueries query) {
         Integer idx = query.getIdx();
         if (idx == 2) {
-            query.setUserIdList(userMapper.findIdByName(query.getQr()));
+            List<Integer> userIdList = userMapper.findIdByName(query.getQr());
+            if (userIdList.size() == 0) { // 작성자로 검색한 결과가 0이면 빈 리스트를 리턴한다
+                return new ArrayList<>();
+            } else {
+                query.setUserIdList(userIdList);
+            }
         }
         return articleMapper.findByQueries(query);
     }

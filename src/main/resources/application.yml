@@ -5,15 +5,14 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
-
-
 mybatis:
   mapper-locations: classpath*:/mapper/*.xml
   type-aliases-package: com.eunhasoo.board.domain
 
 logging:
   level:
-    org.springframework.web: ERROR
+    root: INFO
+    com.eunhasoo: DEBUG
     com.eunhasoo.board.mapper: DEBUG
     jdbc.sqlonly: DEBUG
 

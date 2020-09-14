@@ -32,7 +32,7 @@
         <if test="boardId != 0">
             inner join board b ON a.boardId = #{boardId}
         </if>
-        RIGHT JOIN user u ON a.userId = u.id
+        LEFT JOIN user u ON a.userId = u.id
         <where>
             <if test="boardId != 0">
                 AND a.boardId = #{boardId}
