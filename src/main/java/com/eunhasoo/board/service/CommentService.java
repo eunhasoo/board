@@ -20,17 +20,22 @@ public class CommentService {
     }
 
     @Transactional
-    public int deleteByArticleId(int articleId) {
-        return commentMapper.deleteByArticleId(articleId);
-    }
-
-    @Transactional
     public int save(Comment comment) {
-        return commentMapper.save(comment);
+        commentMapper.save(comment);
+        return comment.getId();
     }
 
     public List<Comment> findAll(int articleId) {
         return commentMapper.findAllByArticleId(articleId);
     }
 
+    @Transactional
+    public int deleteById(int id) {
+        return commentMapper.deleteById(id);
+    }
+
+    @Transactional
+    public int update(Comment comment) {
+        return commentMapper.update(comment);
+    }
 }

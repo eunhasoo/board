@@ -17,8 +17,8 @@
     <div class="float-right" role="group">
         <form th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} or
                        ${article.user.loginId} == ${#authentication.getName()}"
-              method="POST" id="deleteForm" th:action="@{/article/delete/{id}(id=${article.id})}">
-            <input type="submit" class="btn btn-outline-danger btn-sm" id="delete" value="삭제">
+              method="POST" class="delete_form" th:action="@{/article/delete/{id}(id=${article.id})}">
+            <input type="submit" class="btn btn-outline-danger btn-sm delete_btn"  value="삭제">
             <a th:href="@{/article/edit/{id}(id=${article.id})}" role="button" class="btn btn-outline-secondary btn-sm">수정</a>
             <a href="/" role="button" class="btn btn-outline-dark btn-sm">목록</a>
         </form>
@@ -49,20 +49,28 @@
     <div class="container bg-light p-3">
         <div class="form-group pt-1" th:each="comment: ${comments}">
             <span th:text="${comment.user.name}" class="font-weight-bold mr-2 mb-2"></span>
-            <span class="text-muted" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></span>
-            <p th:text="${comment.body}" class="ml-2 mt-1"></p>
+            <small><span class="text-muted" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></span></small>
+            <form method="POST" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')} or
+                        ${comment.user.loginId} == ${#authentication.getName()}" th:action="@{/comment/delete/{id}(id=${comment.id})}"
+                  class="d-inline delete_form">
+                <input type="hidden" name="articleId" th:value="${article.id}">
+                <button class="border-0 bg-transparent text-info small comment_edit_btn">수정</button>
+                <input type="submit" class="border-0 small text-danger delete_btn bg-transparent" value="삭제">
+            </form>
+            <p th:text="${comment.body}" class="comment ml-2 mt-1" th:id="${comment.id}"></p>
         </div>
 
-        <form method="POST" th:action="@{/comment/new/{id}(id=${article.id})}" th:object="${comment}">
+        <form method="POST" th:action="@{/comment/new/{id}(id=${article.id})}" th:object="${comment}" id="comment_form">
             <div class="form-row">
                 <div class="form-group col-md-10">
-                    <textarea sec:authorize="isAnonymous()" readonly class="form-control"
+                    <textarea sec:authorize="isAnonymous()" disabled class="form-control"
                               placeholder="로그인이 필요합니다."></textarea>
-                    <textarea sec:authorize="isAuthenticated()" name="body" class="form-control"
+                    <textarea sec:authorize="isAuthenticated()" id="comment_body" name="body" class="form-control"
                               placeholder="책임감과 배려를 담은 댓글을 달아주세요." required></textarea>
                 </div>
                 <div class="form-group col-md-2">
-                        <button type="submit" class="form-control btn btn-success h-100">등록</button>
+                    <input type="hidden" name="articleId" th:value="${article.id}">
+                    <button type="submit" class="form-control btn btn-success h-100 cmt_submit">등록</button>
                 </div>
             </div>
         </form>

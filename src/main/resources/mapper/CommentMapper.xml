@@ -4,7 +4,7 @@
 <mapper namespace="com.eunhasoo.board.mapper.CommentMapper">
 
     <select id="findAllByArticleId" resultMap="userResultMap">
-        SELECT c.id, u.name, modifiedDate, body
+        SELECT c.id, u.name, u.loginId, modifiedDate, body
         FROM comment c
         INNER JOIN user u ON c.userId = u.id
         WHERE articleId = #{articleId}
@@ -20,10 +20,22 @@
         where articleId = #{articleId}
     </delete>
 
+    <delete id="deleteById">
+        DELETE FROM comment
+        WHERE id = #{id}
+    </delete>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comment (articleId, userId, body, createDate, modifiedDate)
         VALUES (#{articleId}, #{userId}, #{body}, now(), now())
     </insert>
+
+    <update id="update" parameterType="com.eunhasoo.board.domain.Comment">
+        UPDATE comment
+        SET body = #{body},
+        modifiedDate = now()
+        WHERE id = #{id}
+    </update>
 
     <resultMap id="userResultMap" type="Comment">
         <id property="id" column="id" />
@@ -31,8 +43,9 @@
         <result property="body" column="body"/>
         <association property="user" javaType="User">
             <id property="id" column="id"/>
+            <result property="loginId" column="loginId"/>
             <result property="name" column="name"/>
         </association>
     </resultMap>
-    
+
 </mapper>
