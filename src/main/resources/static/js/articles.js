@@ -6,14 +6,14 @@ const articles = {
         const deleteBtn = Array.from(document.querySelectorAll('.delete_btn'));
         deleteBtn.forEach(btn => btn.addEventListener('click', this.onDeleteBtnClicked));
 
-        const commentEditBtn = document.querySelector('.comment_edit_btn');
-        commentEditBtn.addEventListener('click', this.onCommentEditBtnClicked);
+        const commentEditBtn = Array.from(document.querySelectorAll('.comment_edit_btn'));
+        commentEditBtn.forEach(btn => btn.addEventListener('click', this.onCommentEditBtnClicked));
 
-        const commentSubmitBtn = document.querySelector('.cmt_submit');
-        commentSubmitBtn.addEventListener('click', this.onCommentSubmit);
+        const commentSubmitBtn = Array.from(document.querySelectorAll('.cmt_submit'));
+        commentSubmitBtn.forEach(btn => btn.addEventListener('click', this.onCommentSubmit));
     },
     onDeleteBtnClicked() {
-        const res = confirm('정말 삭제하시겠습니까?');
+        const res = confirm('정말로 삭제하시겠습니까?');
         if (res == true) {
             $(this).closest('form').submit();
             alert('삭제되었습니다.');
@@ -31,9 +31,9 @@ const articles = {
             e.target.textContent = '수정 취소';
         } else {
             $('#comment_body').val('');
-            document.querySelector('.cmt_submit').textContent = '수정';
+            document.querySelector('.cmt_submit').textContent = '등록';
             document.querySelector('#comment_form').action = '/comment/new/' + commentId;
-            e.target.textContent = '등록';
+            e.target.textContent = '수정';
         }
     },
     onCommentSubmit(e) {

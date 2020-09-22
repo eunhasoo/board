@@ -61,6 +61,7 @@ public class ArticleController {
     @GetMapping("/article/edit/{articleId}")
     public String editForm(@PathVariable int articleId, Model model, Authentication authentication) {
         Article article = getArticle(articleId, authentication);
+
         ArticleForm form = new ArticleForm();
         form.setArticleId(article.getId());
         form.setBoardId(article.getBoard().getId());
@@ -90,13 +91,14 @@ public class ArticleController {
     public String search(@RequestParam(required = false) Integer op, @RequestParam(required = false) Integer bId,
                             @RequestParam String qr, Model model) {
         SearchQueries queries = new SearchQueries();
-        if (bId != null) {
+        if (bId != null) { // 게시판 ID
             queries.setBoardId(bId);
         }
-        if (op != null) {
+        if (op != null) { // 제목+내용 / 제목 / 작성자 중 선택
             queries.setIdx(op);
         }
-        queries.setQr(qr);
+        queries.setQr(qr); // 검색 쿼리 (필수)
+
         model.addAttribute("boards", boardService.findAll());
         model.addAttribute("articles", articleService.findByQueries(queries));
         model.addAttribute("queries", queries);
@@ -109,7 +111,7 @@ public class ArticleController {
                 .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.getValue()));
         if (!isAdmin) {
             if (!authentication.getName().equals(article.getUser().getLoginId())) {
-                throw new UnAuthorizedException("수정 권한이 없습니다.");
+                throw new UnAuthorizedException("접근 권한이 없습니다.");
             }
         }
         return article;

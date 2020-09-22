@@ -46,7 +46,7 @@ public class ArticleService {
         article.setTitle(form.getTitle());
         article.setUserId(user.getId());
         article.setBoardId(form.getBoardId());
-        article.setNo(articleMapper.findLastAddedNo(form.getBoardId()));
+        article.setNo(findLastAddedNo(form.getBoardId()));
         articleMapper.save(article);
         return article.getId();
     }
@@ -60,21 +60,20 @@ public class ArticleService {
     @Transactional
     public int update(ArticleForm form) {
         Article origin = articleMapper.findOne(form.getArticleId());
-        // 게시판이 변경되면 새로운 글번호가 부여된다
+        // 게시판이 변경되면 새로운 글번호를 부여한다
         if (origin.getBoard().getId() != form.getBoardId()) {
             form.setNo(findLastAddedNo(form.getBoardId()));
         } else {
             form.setNo(0);
         }
-
         return articleMapper.update(form);
     }
 
     public List<SearchResult> findByQueries(SearchQueries query) {
         Integer idx = query.getIdx();
-        if (idx == 2) {
+        if (idx == 2) { // 작성자명으로 쿼리 검색시
             List<Integer> userIdList = userMapper.findIdByName(query.getQr());
-            if (userIdList.size() == 0) { // 작성자로 검색한 결과가 0이면 빈 리스트를 리턴한다
+            if (userIdList.size() == 0) { // 결과가 없으면 빈 리스트를 리턴한다
                 return new ArrayList<>();
             } else {
                 query.setUserIdList(userIdList);
