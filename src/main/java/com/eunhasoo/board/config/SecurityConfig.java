@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .antMatchers("/home", "/article/board/**", "/article/{\\d+}", "/member/signUp", "/member/signUpSuccess").permitAll()
+                .antMatchers("/home", "/article/board/**", "/member/signUp", "/member/signUpSuccess").permitAll()
                 .antMatchers("/article/edit/**", "/article/create/**", "/comment/new/**").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/member/info").hasRole("MEMBER")
