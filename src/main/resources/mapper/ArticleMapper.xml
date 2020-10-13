@@ -10,7 +10,7 @@
             INNER JOIN board b ON a.boardId = b.id
             WHERE b.id = #{boardId}
         </if>
-        ORDER BY a.id, a.createDate desc;
+        ORDER BY a.createDate desc;
     </select>
 
     <select id="findOne" resultMap="userBoardResultMap">

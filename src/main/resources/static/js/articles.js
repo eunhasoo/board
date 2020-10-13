@@ -20,6 +20,7 @@ const articles = {
         }
     },
     onCommentEditBtnClicked(e) {
+        const articleId = parseInt(document.getElementById('articleId').value);
         const comment = e.target.parentElement.nextElementSibling;
         const commentId = comment.id;
         if (e.target.textContent === '수정') {
@@ -32,7 +33,7 @@ const articles = {
         } else {
             $('#comment_body').val('');
             document.querySelector('.cmt_submit').textContent = '등록';
-            document.querySelector('#comment_form').action = '/comment/new/' + commentId;
+            document.querySelector('#comment_form').action = '/comment/new/' + articleId;
             e.target.textContent = '수정';
         }
     },
