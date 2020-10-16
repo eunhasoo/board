@@ -20,6 +20,21 @@
         WHERE email = #{email}
     </select>
 
+    <select id="getArticlesById" resultType="com.eunhasoo.board.controller.dto.UsersArticle">
+        SELECT a.id, a.title, a.body, a.createDate
+        FROM article a INNER JOIN user u ON a.userId = u.id
+        WHERE u.id = #{userId}
+        ORDER BY a.createDate DESC
+    </select>
+
+    <select id="getCommentsById" resultType="com.eunhasoo.board.controller.dto.UsersComment">
+        SELECT c.modifiedDate, c.id, c.body, a.title
+        FROM comment c INNER JOIN user u ON c.userId = u.id
+        INNER JOIN article a ON c.articleId = a.id
+        WHERE u.id = #{userId}
+        ORDER BY c.createDate DESC
+    </select>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="User">
         INSERT INTO user(loginId, password, `name`, email, userType, enabled)
         VALUES (#{loginId}, #{password}, #{name}, #{email}, 'MEMBER', 0)

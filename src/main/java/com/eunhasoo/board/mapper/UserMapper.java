@@ -1,5 +1,7 @@
 package com.eunhasoo.board.mapper;
 
+import com.eunhasoo.board.controller.dto.UsersArticle;
+import com.eunhasoo.board.controller.dto.UsersComment;
 import com.eunhasoo.board.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,4 +13,6 @@ public interface UserMapper {
     User findById(String loginId);
     int save(User user);
     User findByEmail(String email);
+    List<UsersArticle> getArticlesById(int userId);
+    List<UsersComment> getCommentsById(int userId);
 }
