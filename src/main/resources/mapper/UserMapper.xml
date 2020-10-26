@@ -28,7 +28,7 @@
     </select>
 
     <select id="getCommentsById" resultType="com.eunhasoo.board.controller.dto.UsersComment">
-        SELECT c.modifiedDate, c.id, c.body, a.title
+        SELECT c.modifiedDate, c.id, c.body, a.title as articleTitle, a.id as articleId
         FROM comment c INNER JOIN user u ON c.userId = u.id
         INNER JOIN article a ON c.articleId = a.id
         WHERE u.id = #{userId}

@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @Setter
 public class UsersComment {
     private int id;
+    private int articleId;
     private String body;
-    private String title;
+    private String articleTitle;
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
 }

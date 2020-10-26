@@ -1,9 +1,13 @@
 package com.eunhasoo.board.controller;
 
 import com.eunhasoo.board.controller.dto.UserForm;
+import com.eunhasoo.board.controller.dto.UsersArticle;
+import com.eunhasoo.board.controller.dto.UsersComment;
 import com.eunhasoo.board.service.UserDetailService;
+import com.eunhasoo.board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,13 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
 @Slf4j
 public class UserController {
 
-    private final UserDetailService userService;
+    private final UserDetailService userDetailService;
+    private final UserService userService;
 
     @GetMapping("/member/signUp")
     public String signUp(Model model) {
@@ -31,17 +37,17 @@ public class UserController {
     @PostMapping("/member/signUp")
     public String signUp(@ModelAttribute("user") @Valid UserForm form, BindingResult bindingResult,
                          RedirectAttributes redirectAttributes) {
-        if (userService.findUserById(form.getUsername()) != null) {
+        if (userDetailService.findUserById(form.getUsername()) != null) {
             bindingResult.rejectValue("username", "error.username", "이미 존재하는 아이디입니다.");
             return "/member/signUp";
-        } else if (userService.findUserByEmail(form.getEmail()) != null) {
+        } else if (userDetailService.findUserByEmail(form.getEmail()) != null) {
             bindingResult.rejectValue("email", "error.email", "이미 존재하는 이메일입니다.");
             return "/member/signUp";
         } else if (bindingResult.hasErrors()) {
             return "/member/signUp";
         }
 
-        userService.joinUser(form);
+        userDetailService.joinUser(form);
         redirectAttributes.addFlashAttribute("loginId", form.getUsername());
         redirectAttributes.addFlashAttribute("name", form.getName());
         return "redirect:/member/signUpSuccess";
@@ -70,5 +76,25 @@ public class UserController {
         model.addAttribute("user", new UserForm());
         return "member/signIn";
     }
+
+    @GetMapping("/member/myInfo")
+    public String myInfo() {
+        return "member/myInfo";
+    }
+
+    @GetMapping("/member/myInfo/articles")
+    public String userArticles(Authentication authentication, Model model) {
+        List<UsersArticle> usersArticle = userService.getUsersArticle(authentication.getName());
+        model.addAttribute("articles", usersArticle);
+        return "member/articles";
+    }
+
+    @GetMapping("/member/myInfo/comments")
+    public String userComments(Authentication authentication, Model model) {
+        List<UsersComment> usersComments = userService.getUsersComment(authentication.getName());
+        model.addAttribute("comments", usersComments);
+        return "member/comments";
+    }
+
 
 }

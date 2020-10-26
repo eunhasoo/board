@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div class="container p-3">
+     <div class="form-group" th:each="comment: ${comments}">
+     <hr/>
+         <p class="text-muted" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></p>
+         <p th:text="${comment.body}" class="comment mt-1" th:id="${comment.id}"></p>
+         <a th:text="|원문제목: ${comment.articleTitle}|" class="text-muted"
+            th:href="@{/article/{id}(id=${comment.articleId})}"></a>
+     </div>
+
+        <div th:replace="fragments/footer :: footer"/>
+</div>

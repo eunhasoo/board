@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div class="container p-3">
+
+    <div>
+        <table class="table">
+            <thead>
+            <tr class="row text-center">
+                <th class="d-inline-block col-2">글번호</th>
+                <th class="d-inline-block col-8">제목</th>
+                <th class="d-inline-block col-2">작성일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="row" th:each="article : ${articles}">
+                <td  class="d-inline-block col-2 text-center" th:text="${article.id}"></td>
+                <td class="d-inline-block col-8">
+                    <a class="text-dark" th:href="@{/article/{id}(id=${article.id})}">
+                        <p th:text="${article.title}"></p>
+                    </a>
+                    <p class="text-muted" th:text="${article.body}"></p>
+                </td>
+                <td class="d-inline-block col-2 text-center" th:text="${#temporals.format(article.createDate, 'yy.MM.dd')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div>

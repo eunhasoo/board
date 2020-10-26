@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div class="container p-3 text-center">
+
+    <div class="bg-light p-5">
+
+        <h1 class="mb-4">내 정보</h1>
+
+        <div class="m-auto">
+            <a class="btn btn-lg btn-info m-3" href="/member/myInfo/articles">
+                내가 쓴 글 확인
+            </a>
+
+            <a class="btn btn-lg btn-info m-3" href="/member/myInfo/comments">
+                내가 쓴 댓글 확인
+            </a>
+
+            <a class="btn btn-lg btn-info m-3" href="/member/myInfo/edit">
+                회원정보 수정
+            </a>
+
+        </div>
+
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+</div>
