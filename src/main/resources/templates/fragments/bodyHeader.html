@@ -9,9 +9,6 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Category
@@ -28,18 +25,39 @@
             </li>
         </ul>
 
+        <div class="btn-group mr-2">
+            <a href="/member/myInfo" class="btn btn-light">
+                <i class="far fa-user"></i>
+            </a>
+            <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+            </button>
+            <div class="dropdown-menu">
+                <div sec:authorize="isAnonymous()">
+                    <a class="dropdown-item" href="/member/signUp">
+                        회원가입
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/member/signIn">
+                        로그인
+                    </a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <a class="dropdown-item" href="/article/new">글쓰기</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="POST" class="form-inline my-2 my-lg-0" th:action="@{/member/signOut}">
+                        <input sec:authorize="isAuthenticated()" type="submit" value="로그아웃" class="dropdown-item" />
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <form class="form-inline my-2 my-lg-0" action="/article/search">
             <input type="hidden" name="bId" value="0">
             <input type="hidden" name="idx" value="0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" name="qr" required>
-            <button class="btn btn-outline-success my-2 mr-4 my-sm-0" type="submit">Search</button>
+            <button class="btn btn-outline-success my-2 mr-2 my-sm-0" type="submit">Search</button>
         </form>
 
-        <a sec:authorize="isAnonymous()" href="/member/signUp"><button type="button" class="btn btn-light mr-1">Sign Up</button></a>
-        <a sec:authorize="isAnonymous()" href="/member/signIn"><button type="button" class="btn btn-secondary">Sign In</button></a>
-        <a sec:authorize="isAuthenticated()" href="/article/new"><button type="button" class="btn btn-light mr-1">Write</button></a>
-        <form sec:authorize="isAuthenticated()" method="POST" class="form-inline my-2 my-lg-0" th:action="@{/member/signOut}">
-            <button sec:authorize="isAuthenticated()" type="submit" class="btn btn-secondary">Sign Out</button>
-        </form>
+
     </div>
 </nav>
