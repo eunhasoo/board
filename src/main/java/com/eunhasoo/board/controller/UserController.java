@@ -3,6 +3,7 @@ package com.eunhasoo.board.controller;
 import com.eunhasoo.board.controller.dto.UserForm;
 import com.eunhasoo.board.controller.dto.UsersArticle;
 import com.eunhasoo.board.controller.dto.UsersComment;
+import com.eunhasoo.board.domain.User;
 import com.eunhasoo.board.service.UserDetailService;
 import com.eunhasoo.board.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +27,8 @@ public class UserController {
     private final UserDetailService userDetailService;
     private final UserService userService;
 
+    // ========== 회원가입 및 로그인 ========== //
+
     @GetMapping("/member/signUp")
     public String signUp(Model model) {
         model.addAttribute("user", new UserForm());
@@ -39,12 +40,12 @@ public class UserController {
                          RedirectAttributes redirectAttributes) {
         if (userDetailService.findUserById(form.getUsername()) != null) {
             bindingResult.rejectValue("username", "error.username", "이미 존재하는 아이디입니다.");
-            return "/member/signUp";
+            return "member/signUp";
         } else if (userDetailService.findUserByEmail(form.getEmail()) != null) {
             bindingResult.rejectValue("email", "error.email", "이미 존재하는 이메일입니다.");
-            return "/member/signUp";
+            return "member/signUp";
         } else if (bindingResult.hasErrors()) {
-            return "/member/signUp";
+            return "member/signUp";
         }
 
         userDetailService.joinUser(form);
@@ -77,24 +78,69 @@ public class UserController {
         return "member/signIn";
     }
 
+    // ========== 중복 체크 Web API ========== //
+
+    @GetMapping("/member/check/{loginId}")
+    @ResponseBody
+    public int userIdCheck(@PathVariable String loginId) {
+        return userService.isExistLoginId(loginId) ? 0 : 1;
+    }
+
+    @GetMapping("/member/check/{email}")
+    @ResponseBody
+    public int EmailCheck(@PathVariable String email) {
+        return userService.isExistEmail(email) ? 0 : 1;
+    }
+
+    @GetMapping("/member/check/{nickname}")
+    @ResponseBody
+    public int nicknameCheck(@PathVariable String nickname) {
+        return userService.isExistNickname(nickname) ? 0 : 1;
+    }
+
+    // ========== 회원 정보 조회 및 수정 ========== //
+
     @GetMapping("/member/myInfo")
     public String myInfo() {
         return "member/myInfo";
     }
 
     @GetMapping("/member/myInfo/articles")
-    public String userArticles(Authentication authentication, Model model) {
+    public String myInfoArticles(Authentication authentication, Model model) {
         List<UsersArticle> usersArticle = userService.getUsersArticle(authentication.getName());
         model.addAttribute("articles", usersArticle);
         return "member/articles";
     }
 
     @GetMapping("/member/myInfo/comments")
-    public String userComments(Authentication authentication, Model model) {
+    public String myInfoComments(Authentication authentication, Model model) {
         List<UsersComment> usersComments = userService.getUsersComment(authentication.getName());
         model.addAttribute("comments", usersComments);
         return "member/comments";
     }
 
+    @GetMapping("/member/myInfo/edit")
+    public String myInfoEdit(Authentication authentication, Model model) {
+        User user = userDetailService.findUserById(authentication.getName());
+        model.addAttribute("userForm", user.toUserForm());
+        return "member/edit";
+    }
+
+    @PostMapping("/member/myInfo/edit")
+    public String myInfoEdit(UserForm userForm, BindingResult bindingResult) {
+        if (userForm.getPassword().length() > 0 && userForm.getPassword().length() < 6) {
+            bindingResult.rejectValue("password", "error.password", "6자 이상으로 입력해주세요.");
+            return "member/edit";
+        } else if (userService.isExistNickname(userForm.getName())) {
+            bindingResult.rejectValue("name", "error.name", "이미 존재하는 닉네임입니다.");
+            return "member/edit";
+        } else if (userForm.getName().length() < 2 || userForm.getName().length() < 12) {
+            bindingResult.rejectValue("name", "error.name", "6자 이상 12자 이내로 입력해주세요.");
+            return "member/edit";
+        }
+
+        userService.updateUser(userForm.toUser());
+        return "member/myInfo";
+    }
 
 }

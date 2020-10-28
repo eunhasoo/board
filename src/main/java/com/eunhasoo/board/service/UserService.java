@@ -8,7 +8,10 @@ import com.eunhasoo.board.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +54,33 @@ public class UserService {
     }
 
     public String parseHTML(String resources) {
-        Document doc = Jsoup.parse(resources);
+        Document doc = Jsoup.parse(Jsoup.clean(resources, Whitelist.basic()));
         String result = doc.body().text();
         return result.length() > 240 ? result.substring(0, 240) : result;
+    }
+
+    public boolean isExistEmail(String email) {
+        Integer result = userMapper.findIfExistByEmail(email);
+        return result == null;
+    }
+
+    public boolean isExistLoginId(String loginId) {
+        Integer result = userMapper.findIfExistByLoginId(loginId);
+        return result == null;
+    }
+
+    public boolean isExistNickname(String nickname) {
+        Integer result = userMapper.findIfExistByNickname(nickname);
+        return result == null;
+    }
+
+    @Transactional
+    public void updateUser(User user) {
+        if (user.getPassword().length() > 0) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userMapper.update(user);
     }
 
 }

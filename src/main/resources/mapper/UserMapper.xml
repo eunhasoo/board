@@ -9,7 +9,7 @@
     </select>
 
     <select id="findById" resultType="User">
-        SELECT loginId, password, userType, id
+        SELECT loginId, password, userType, id, name, email
         FROM user
         WHERE loginId = #{loginId}
     </select>
@@ -18,6 +18,21 @@
         SELECT id
         FROM user
         WHERE email = #{email}
+    </select>
+    
+    <select id="findIfExistByNickname" resultType="int">
+        SELECT id FROM user
+        WHERE name = #{nickname}
+    </select>
+
+    <select id="findIfExistByEmail" resultType="int">
+        SELECT id FROM user
+        WHERE email = #{email}
+    </select>
+
+    <select id="findIfExistByLoginId" resultType="int">
+        SELECT id FROM user
+        WHERE loginId = #{loginId}
     </select>
 
     <select id="getArticlesById" resultType="com.eunhasoo.board.controller.dto.UsersArticle">
@@ -39,5 +54,15 @@
         INSERT INTO user(loginId, password, `name`, email, userType, enabled)
         VALUES (#{loginId}, #{password}, #{name}, #{email}, 'MEMBER', 0)
     </insert>
+
+    <update id="update" parameterType="com.eunhasoo.board.domain.User">
+        UPDATE user
+        SET
+        <if test="password != ''">
+            password = #{password},
+        </if>
+        name = #{name}
+        WHERE loginId = #{loginId}
+    </update>
 
 </mapper>

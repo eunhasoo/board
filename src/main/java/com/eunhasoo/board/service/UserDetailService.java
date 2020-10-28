@@ -55,4 +55,5 @@ public class UserDetailService implements UserDetailsService {
     public User findUserByEmail(String email) {
         return userMapper.findByEmail(email);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.eunhasoo.board.controller.dto;
 
+import com.eunhasoo.board.domain.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,13 @@ public class UserForm {
     @NotEmpty(message="이메일을 작성해주세요.")
     @Email(message="이메일 주소를 양식에 맞게 작성해주세요.")
     private String email;
+
+    public User toUser() {
+        User user = new User();
+        user.setLoginId(this.getUsername());
+        user.setEmail(this.getEmail());
+        user.setPassword(this.getPassword());
+        user.setName(this.getName());
+        return user;
+    }
 }

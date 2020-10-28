@@ -1,5 +1,6 @@
 package com.eunhasoo.board.domain;
 
+import com.eunhasoo.board.controller.dto.UserForm;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,13 @@ public class User {
     private List<Article> articles;
     private List<Message> messages;
     private List<Comment> comments;
+
+    public UserForm toUserForm() {
+        UserForm userForm = new UserForm();
+        userForm.setEmail(this.getEmail());
+        userForm.setName(this.getName());
+        userForm.setUsername(this.getLoginId());
+        userForm.setPassword(this.getPassword());
+        return userForm;
+    }
 }
