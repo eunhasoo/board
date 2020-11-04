@@ -26,6 +26,8 @@ public class UserForm {
     @NotEmpty(message="이메일을 작성해주세요.")
     @Email(message="이메일 주소를 양식에 맞게 작성해주세요.")
     private String email;
+    
+    private String nameBeforeChanged;
 
     public User toUser() {
         User user = new User();

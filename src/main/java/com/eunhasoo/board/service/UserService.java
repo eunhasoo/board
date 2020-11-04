@@ -61,17 +61,17 @@ public class UserService {
 
     public boolean isExistEmail(String email) {
         Integer result = userMapper.findIfExistByEmail(email);
-        return result == null;
+        return result != null;
     }
 
     public boolean isExistLoginId(String loginId) {
         Integer result = userMapper.findIfExistByLoginId(loginId);
-        return result == null;
+        return result != null;
     }
 
     public boolean isExistNickname(String nickname) {
         Integer result = userMapper.findIfExistByNickname(nickname);
-        return result == null;
+        return result != null;
     }
 
     @Transactional

@@ -15,8 +15,8 @@ public interface UserMapper {
     User findByEmail(String email);
     List<UsersArticle> getArticlesById(int userId);
     List<UsersComment> getCommentsById(int userId);
-    int findIfExistByNickname(String nickname);
-    int findIfExistByLoginId(String loginId);
-    int findIfExistByEmail(String email);
+    Integer findIfExistByNickname(String nickname);
+    Integer findIfExistByLoginId(String loginId);
+    Integer findIfExistByEmail(String email);
     void update(User user);
 }

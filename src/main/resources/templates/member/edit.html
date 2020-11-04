@@ -38,6 +38,7 @@
                 <label for="name" class="control-label">닉네임</label> <span class="badge badge-pill badge-danger">수정가능</span>
                 <div class="controls">
                     <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="2자 이상 12자 이내" min="2" max="12">
+                    <input type="hidden" name="nameBeforeChanged" th:value="*{name}">
                 </div>
                 <p class="alert text-danger m-auto" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
             </div>

@@ -44,6 +44,9 @@ public class UserController {
         } else if (userDetailService.findUserByEmail(form.getEmail()) != null) {
             bindingResult.rejectValue("email", "error.email", "이미 존재하는 이메일입니다.");
             return "member/signUp";
+        } else if (userService.isExistNickname(form.getName())) {
+            bindingResult.rejectValue("name", "error.name", "이미 존재하는 닉네임입니다.");
+            return "member/signUp";
         } else if (bindingResult.hasErrors()) {
             return "member/signUp";
         }
@@ -80,22 +83,22 @@ public class UserController {
 
     // ========== 중복 체크 Web API ========== //
 
-    @GetMapping("/member/check/{loginId}")
+    @GetMapping("/member/check/username/{loginId}")
     @ResponseBody
     public int userIdCheck(@PathVariable String loginId) {
-        return userService.isExistLoginId(loginId) ? 0 : 1;
+        return userService.isExistLoginId(loginId) ? 1 : 0;
     }
 
-    @GetMapping("/member/check/{email}")
+    @GetMapping("/member/check/email/{email}")
     @ResponseBody
     public int EmailCheck(@PathVariable String email) {
-        return userService.isExistEmail(email) ? 0 : 1;
+        return userService.isExistEmail(email) ? 1 : 0;
     }
 
-    @GetMapping("/member/check/{nickname}")
+    @GetMapping("/member/check/name/{nickname}")
     @ResponseBody
     public int nicknameCheck(@PathVariable String nickname) {
-        return userService.isExistNickname(nickname) ? 0 : 1;
+        return userService.isExistNickname(nickname) ? 1 : 0;
     }
 
     // ========== 회원 정보 조회 및 수정 ========== //
@@ -131,12 +134,18 @@ public class UserController {
         if (userForm.getPassword().length() > 0 && userForm.getPassword().length() < 6) {
             bindingResult.rejectValue("password", "error.password", "6자 이상으로 입력해주세요.");
             return "member/edit";
-        } else if (userService.isExistNickname(userForm.getName())) {
-            bindingResult.rejectValue("name", "error.name", "이미 존재하는 닉네임입니다.");
-            return "member/edit";
-        } else if (userForm.getName().length() < 2 || userForm.getName().length() < 12) {
-            bindingResult.rejectValue("name", "error.name", "6자 이상 12자 이내로 입력해주세요.");
-            return "member/edit";
+        }
+
+        if (!userForm.getNameBeforeChanged().equals(userForm.getName())) {
+            if (userService.isExistNickname(userForm.getName())) {
+                bindingResult.rejectValue("name", "error.name", "이미 존재하는 닉네임입니다.");
+                return "member/edit";
+            }
+
+            if (userForm.getName().length() < 2 || userForm.getName().length() > 12) {
+                bindingResult.rejectValue("name", "error.name", "2자 이상 12자 이내로 입력해주세요.");
+                return "member/edit";
+            }
         }
 
         userService.updateUser(userForm.toUser());
