@@ -1,4 +1,5 @@
 const articles = {
+    commentEditFlag: false,
     init() {
         const form = Array.from(document.querySelectorAll('.delete_form'));
         form.forEach(f => f.addEventListener('submit', e => e.preventDefault()));
@@ -24,6 +25,9 @@ const articles = {
         const comment = e.target.parentElement.nextElementSibling;
         const commentId = comment.id;
         if (e.target.textContent === '수정') {
+            // 수정 취소는 오직 하나만 존재하도록 감시
+           (Array.from(document.querySelectorAll('.comment_edit_btn'))).forEach(btn => btn.innerText = '수정');
+
             $('#comment_body').val(comment.textContent);
             $('#comment_body').focus();
 
