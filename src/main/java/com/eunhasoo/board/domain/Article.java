@@ -13,6 +13,8 @@ public class Article {
     private int no;
     private String title;
     private String body;
+    private int commentCount;
+
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;
 

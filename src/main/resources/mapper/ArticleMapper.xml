@@ -4,12 +4,15 @@
 <mapper namespace="com.eunhasoo.board.mapper.ArticleMapper">
 
     <select id="findAll" resultMap="userResultMap">
-        SELECT a.id, a.no, a.createDate, a.title, u.name
-        FROM article a INNER JOIN user u ON a.userId = u.id
+        SELECT a.id, a.no, a.createDate, a.title, u.name, COUNT(c.id) AS commentCount
+        FROM article a
+        INNER JOIN user u ON a.userId = u.id
+        LEFT JOIN comment c ON a.id = c.articleId
         <if test="boardId != 0">
             INNER JOIN board b ON a.boardId = b.id
             WHERE b.id = #{boardId}
         </if>
+        GROUP BY a.id
         ORDER BY a.createDate desc;
     </select>
 
@@ -81,6 +84,7 @@
         <result property="no" column="no"/>
         <result property="createDate" column="createDate"/>
         <result property="title" column="title"/>
+        <result property="commentCount" column="commentCount"/>
         <association property="user" javaType="User">
             <id property="id" column="id"/>
             <result property="name" column="name"/>
