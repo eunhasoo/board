@@ -62,7 +62,8 @@
                 <button class="border-0 bg-transparent text-info small comment_edit_btn">수정</button>
                 <input type="submit" class="border-0 small text-danger delete_btn bg-transparent" value="삭제">
             </form>
-            <p th:text="${comment.body}" class="comment ml-2 mt-1" th:id="${comment.id}"></p>
+            <p th:utext="${#strings.replace( #strings.escapeXml(comment.body),T(java.lang.System).getProperty('line.separator'),'&lt;br /&gt;')}"  class="comment ml-2 mt-1" th:id="${comment.id}">
+            </p>
         </div>
 
         <form method="POST" th:action="@{/comment/new/{id}(id=${article.id})}" th:object="${comment}" id="comment_form">

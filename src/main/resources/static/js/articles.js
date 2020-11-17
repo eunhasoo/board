@@ -21,14 +21,22 @@ const articles = {
         }
     },
     onCommentEditBtnClicked(e) {
+        function replaceStr(str) {
+            return str.replace(/<br>/g, "\n")
+                      .replace(/&lt;/g, '<')
+                      .replace(/&gt;/g, '>');
+        }
+
         const articleId = parseInt(document.getElementById('articleId').value);
         const comment = e.target.parentElement.nextElementSibling;
+        const commentBody = replaceStr(comment.innerHTML);
         const commentId = comment.id;
+
         if (e.target.textContent === '수정') {
             // 수정 취소는 오직 하나만 존재하도록 감시
            (Array.from(document.querySelectorAll('.comment_edit_btn'))).forEach(btn => btn.innerText = '수정');
 
-            $('#comment_body').val(comment.textContent);
+            $('#comment_body').val(commentBody);
             $('#comment_body').focus();
 
             document.querySelector('.cmt_submit').textContent = '수정';
