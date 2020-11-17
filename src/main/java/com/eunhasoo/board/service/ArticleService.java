@@ -10,6 +10,8 @@ import com.eunhasoo.board.mapper.CommentMapper;
 import com.eunhasoo.board.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,9 @@ public class ArticleService {
     }
 
     public Article findOne(int articleId) {
-        return articleMapper.findOne(articleId);
+        Article article = articleMapper.findOne(articleId);
+        article.setBody(purifyBody(article.getBody()));
+        return article;
     }
 
     public int findLastAddedNo(int boardId) {
@@ -42,7 +46,7 @@ public class ArticleService {
     public int save(ArticleForm form, String loginId) {
         User user = userMapper.findById(loginId);
         Article article = new Article();
-        article.setBody(form.getBody());
+        article.setBody(purifyBody(form.getBody()));
         article.setTitle(form.getTitle());
         article.setUserId(user.getId());
         article.setBoardId(form.getBoardId());
@@ -80,6 +84,10 @@ public class ArticleService {
             }
         }
         return articleMapper.findByQueries(query);
+    }
+
+    public String purifyBody(String resource) {
+        return Jsoup.clean(resource, Whitelist.basic());
     }
 
 }
