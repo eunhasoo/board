@@ -7,13 +7,21 @@
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
 <div class="container p-3">
-     <div class="form-group" th:each="comment: ${comments}">
-     <hr/>
-         <p class="text-muted" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></p>
-         <p th:text="${comment.body}" class="comment mt-1" th:id="${comment.id}"></p>
-         <a th:text="|원문제목: ${comment.articleTitle}|" class="text-muted"
-            th:href="@{/article/{id}(id=${comment.articleId})}"></a>
-     </div>
-
+    <form method="POST" th:action="@{/member/myInfo/comments/delete}">
+        <a class="btn btn-outline-secondary">
+            <i class="fas fa-check"></i> 전체선택
+        </a>
+        <input type="submit" value="삭제" class="btn btn-danger">
+        <div class="form-group" th:each="comment: ${comments}">
+         <hr/>
+            <input type="checkbox" th:value="${comment.id}" name="commentId" class="d-inline-block align-top">
+             <div class="d-inline-block mx-2 align-top">
+                 <p class="text-muted mb-2" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></p>
+                 <a th:text="${comment.body}" class="comment mb-2 text-dark d-block" th:id="${comment.id}" th:href="@{/article/{id}(id=${comment.articleId})}"></a>
+                 <a th:text="|원문제목: ${comment.articleTitle}|" class="text-muted"
+                    th:href="@{/article/{id}(id=${comment.articleId})}"></a>
+             </div>
+         </div>
+    </form>
         <div th:replace="fragments/footer :: footer"/>
 </div>
