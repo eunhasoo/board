@@ -24,10 +24,10 @@ public class ArticleServiceTest {
     @Test
     public void 게시글_등록() throws Exception {
         // given
-        ArticleForm form = makeArticleForm();
+        ArticleForm form = makeArticleForm(1);
 
         // when
-        Integer id = articleService.insert(form);
+        Integer id = articleService.save(form, "admin");
         Article findArticle = articleService.findOne(id);
 
         // then
@@ -37,12 +37,12 @@ public class ArticleServiceTest {
     }
 
     @Test
-    public void 게시글_수정() throws Exception {
+    public void 게시글_수정_성공() throws Exception {
         // given
-        ArticleForm form = makeArticleForm();
-        int id = articleService.insert(form);
-        form.setArticleId(id);
+        ArticleForm form = makeArticleForm(1);
+        int id = articleService.save(form, "admin");
         Article beforeUpdate = articleService.findOne(id);
+        form.setArticleId(id);
 
         String title = "수정후 제목";
         String body = "수정후 내용";
@@ -52,23 +52,24 @@ public class ArticleServiceTest {
         form.setBoardId(boardId);
 
         // when
-        articleService.update(form);
+        int updateResult = articleService.update(form);
         Article updatedArticle = articleService.findOne(id);
 
         // then
+        assertEquals(updateResult, 1);
         assertEquals(updatedArticle.getTitle(), title);
         assertEquals(updatedArticle.getBody(), body);
-        assertEquals(updatedArticle.getBoardId(), boardId);
+        assertEquals(updatedArticle.getBoard().getId(), boardId);
         assertNotEquals("게시판이 변경되면 새로운 글번호가 부여된다.",
                 beforeUpdate.getNo(), updatedArticle.getNo());
     }
 
-    public ArticleForm makeArticleForm() {
+    public ArticleForm makeArticleForm(int userId) {
         ArticleForm form = new ArticleForm();
         form.setTitle("제목");
         form.setBody("내용");
         form.setBoardId(2);
-        form.setUserId(1);
+        form.setUserId(userId);
         return form;
     }
 

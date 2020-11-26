@@ -45,7 +45,7 @@
                     <a class="dropdown-item" href="/article/new">글쓰기</a>
                     <div class="dropdown-divider"></div>
                     <form method="POST" class="form-inline my-2 my-lg-0" th:action="@{/member/signOut}">
-                        <input sec:authorize="isAuthenticated()" type="submit" value="로그아웃" class="dropdown-item" />
+                        <input type="submit" value="로그아웃" class="dropdown-item" />
                     </form>
                 </div>
             </div>

@@ -32,9 +32,7 @@ public class ArticleService {
     }
 
     public Article findOne(int articleId) {
-        Article article = articleMapper.findOne(articleId);
-        article.setBody(purifyBody(article.getBody()));
-        return article;
+        return articleMapper.findOne(articleId);
     }
 
     public int findLastAddedNo(int boardId) {
