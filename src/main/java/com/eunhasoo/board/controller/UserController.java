@@ -4,6 +4,7 @@ import com.eunhasoo.board.controller.dto.UserForm;
 import com.eunhasoo.board.controller.dto.UsersArticle;
 import com.eunhasoo.board.controller.dto.UsersComment;
 import com.eunhasoo.board.domain.User;
+import com.eunhasoo.board.service.CommentService;
 import com.eunhasoo.board.service.UserDetailService;
 import com.eunhasoo.board.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class UserController {
 
     private final UserDetailService userDetailService;
     private final UserService userService;
+    private final CommentService commentService;
 
     // ========== 회원가입 및 로그인 ========== //
 
@@ -150,6 +152,14 @@ public class UserController {
 
         userService.updateUser(userForm.toUser());
         return "member/myInfo";
+    }
+
+    @PostMapping("/member/myInfo/comments/delete")
+    public String deleteComment(@RequestParam(value="commentId", required = false) List<Integer> commentIds) {
+        if (commentIds != null) {
+            commentService.deleteByIds(commentIds);
+        }
+        return "redirect:/member/myInfo/comments";
     }
 
 }

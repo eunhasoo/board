@@ -8,13 +8,13 @@
 
 <div class="container p-3">
     <form method="POST" th:action="@{/member/myInfo/comments/delete}">
-        <a class="btn btn-outline-secondary">
+        <a class="btn btn-outline-secondary select_all">
             <i class="fas fa-check"></i> 전체선택
         </a>
         <input type="submit" value="삭제" class="btn btn-danger">
         <div class="form-group" th:each="comment: ${comments}">
          <hr/>
-            <input type="checkbox" th:value="${comment.id}" name="commentId" class="d-inline-block align-top">
+            <input type="checkbox" th:value="${comment.id}" name="commentId" class="d-inline-block align-top check_box">
              <div class="d-inline-block mx-2 align-top">
                  <p class="text-muted mb-2" th:text="${#temporals.format(comment.modifiedDate, 'yy.MM.dd HH:mm')}"></p>
                  <a th:text="${comment.body}" class="comment mb-2 text-dark d-block" th:id="${comment.id}" th:href="@{/article/{id}(id=${comment.articleId})}"></a>
@@ -25,3 +25,4 @@
     </form>
         <div th:replace="fragments/footer :: footer"/>
 </div>
+<script src="/js/myInfoCommon.js"></script>

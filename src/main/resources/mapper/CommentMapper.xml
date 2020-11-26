@@ -25,6 +25,14 @@
         WHERE id = #{id}
     </delete>
 
+    <delete id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM comment
+        WHERE id IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comment (articleId, userId, body, createDate, modifiedDate)
         VALUES (#{articleId}, #{userId}, #{body}, now(), now())

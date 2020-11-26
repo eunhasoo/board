@@ -35,6 +35,11 @@ public class CommentService {
     }
 
     @Transactional
+    public int deleteByIds(List<Integer> ids) {
+        return commentMapper.deleteByIds(ids);
+    }
+
+    @Transactional
     public int update(Comment comment) {
         return commentMapper.update(comment);
     }
