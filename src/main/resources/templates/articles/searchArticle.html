@@ -39,6 +39,7 @@
                 <th>제목</th>
                 <th>작성일</th>
                 <th>작성자</th>
+                <th>조회</th>
             </tr>
             </thead>
             <tbody>
@@ -50,6 +51,7 @@
                 </td>
                 <td th:text="${#temporals.format(article.createDate, 'yy.MM.dd')}"></td>
                 <td th:text="${article.userName}"></td>
+                <td th:text="${article.viewCount}"></td>
             </tr>
             </tbody>
         </table>

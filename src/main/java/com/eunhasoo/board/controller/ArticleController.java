@@ -42,7 +42,7 @@ public class ArticleController {
     @GetMapping("/article/board/{boardId}")
     public String findByBoard(@PathVariable int boardId, Model model) {
         model.addAttribute("articles", articleService.findAll(boardId));
-        return "list";
+        return "articles/listArticles";
     }
 
     @GetMapping("/article/new")

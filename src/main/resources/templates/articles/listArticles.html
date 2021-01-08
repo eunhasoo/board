@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+
+<div class="container mt-1">
+
+    <div>
+        <table class="table table-hover">
+            <thead>
+            <tr class="text-center">
+                <th></th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성일</th>
+                <th>조회</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="article : ${articles}">
+                <td th:text="${article.no}" class="text-center"></td>
+                <td scope="col">
+                    <a class="text-dark" th:href="@{/article/{id}(id=${article.id})}">
+                        <span th:text="${article.title}"></span>
+                    </a>
+                    <span th:if="${article.commentCount} > 0" th:text="${article.commentCount}" class="badge badge-pill badge-light text-danger"></span>
+                </td>
+                <td th:text="${article.user.name}" class="text-center"></td>
+                <td th:text="${#temporals.format(article.createDate, 'yy.MM.dd')}" class="text-center"></td>
+                <td th:text="${article.viewCount}" class="text-center"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"/>
+
+</div> <!-- /container -->

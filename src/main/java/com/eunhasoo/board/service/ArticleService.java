@@ -31,7 +31,9 @@ public class ArticleService {
         return articleMapper.findAll(boardId);
     }
 
+    @Transactional
     public Article findOne(int articleId) {
+        articleMapper.countView(articleId);
         return articleMapper.findOne(articleId);
     }
 

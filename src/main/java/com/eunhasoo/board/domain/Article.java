@@ -14,6 +14,7 @@ public class Article {
     private String title;
     private String body;
     private int commentCount;
+    private int viewCount;
 
     private LocalDateTime createDate;
     private LocalDateTime modifiedDate;

@@ -15,7 +15,7 @@ public class HomeController {
     @GetMapping("/home")
     public String list(Model model) {
         model.addAttribute("articles", articleService.findAll(0));
-        return "list";
+        return "home";
     }
 
     @GetMapping("/")

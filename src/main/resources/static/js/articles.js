@@ -2,16 +2,19 @@ const articles = {
     commentEditFlag: false,
     init() {
         const form = Array.from(document.querySelectorAll('.delete_form'));
-        form.forEach(f => f.addEventListener('submit', e => e.preventDefault()));
+        if (form.length > 0) form.forEach(f => f.addEventListener('submit', e => e.preventDefault()));
 
         const deleteBtn = Array.from(document.querySelectorAll('.delete_btn'));
-        deleteBtn.forEach(btn => btn.addEventListener('click', this.onDeleteBtnClicked));
+        if (deleteBtn.length > 0) deleteBtn.forEach(btn => btn.addEventListener('click', this.onDeleteBtnClicked));
 
         const commentEditBtn = Array.from(document.querySelectorAll('.comment_edit_btn'));
-        commentEditBtn.forEach(btn => btn.addEventListener('click', this.onCommentEditBtnClicked));
+        if (commentEditBtn.length > 0) commentEditBtn.forEach(btn => btn.addEventListener('click', this.onCommentEditBtnClicked));
 
         const commentSubmitBtn = Array.from(document.querySelectorAll('.cmt_submit'));
-        commentSubmitBtn.forEach(btn => btn.addEventListener('click', this.onCommentSubmit));
+        if (commentSubmitBtn.length > 0) commentSubmitBtn.forEach(btn => btn.addEventListener('click', this.onCommentSubmit));
+
+        const summernote = document.querySelector('#summernote');
+        if (summernote) this.manageSummernote();
     },
     onDeleteBtnClicked() {
         const res = confirm('정말로 삭제하시겠습니까?');
@@ -53,6 +56,16 @@ const articles = {
         if (e.target.textContent === '수정') {
             alert('수정이 완료되었습니다.');
         }
+    },
+    manageSummernote() {
+        $(function() {
+            $('#summernote').summernote({
+                height: 500,
+                lang: 'ko-KR',
+                codeviewFilter: true,
+                codeviewIframeFilter: true
+            });
+        });
     }
 }
 

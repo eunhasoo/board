@@ -4,7 +4,7 @@
 <mapper namespace="com.eunhasoo.board.mapper.ArticleMapper">
 
     <select id="findAll" resultMap="userResultMap">
-        SELECT a.id, a.no, a.createDate, a.title, u.name, COUNT(c.id) AS commentCount
+        SELECT a.id, a.no, a.createDate, a.title, viewCount, u.name, COUNT(c.id) AS commentCount
         FROM article a
         INNER JOIN user u ON a.userId = u.id
         LEFT JOIN comment c ON a.id = c.articleId
@@ -17,7 +17,7 @@
     </select>
 
     <select id="findOne" resultMap="userBoardResultMap">
-        SELECT a.id, a.no, a.createDate, a.title, a.body, u.loginId, userId, u.name, b.boardName, b.id as boardId
+        SELECT a.id, a.no, a.createDate, a.title, a.body, viewCount, u.loginId, userId, u.name, b.boardName, b.id as boardId
         FROM article a INNER JOIN user u ON a.userId = u.id
         INNER JOIN board b ON a.boardId = b.id
         WHERE a.id = #{articleId}
@@ -31,7 +31,8 @@
     </select>
 
     <select id="findByQueries" resultType="com.eunhasoo.board.controller.dto.SearchResult">
-        SELECT DISTINCT a.createDate, u.name as userName, a.id, title, body FROM article a
+        SELECT DISTINCT a.createDate, u.name as userName, a.id, title, body, viewCount
+        FROM article a
         <if test="boardId != 0">
             inner join board b ON a.boardId = #{boardId}
         </if>
@@ -57,9 +58,15 @@
         ORDER BY a.createDate DESC
     </select>
 
+    <update id="countView">
+        UPDATE article
+        SET viewCount = viewCount + 1
+        WHERE id = #{articleId}
+    </update>
+
     <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="Article">
-        INSERT INTO article (`no`, createDate, modifiedDate, title, body, userId, boardId)
-        VALUES (#{no}, now(), now(), #{title}, #{body}, #{userId}, #{boardId})
+        INSERT INTO article (`no`, createDate, modifiedDate, title, body, userId, boardId, viewCount)
+        VALUES (#{no}, now(), now(), #{title}, #{body}, #{userId}, #{boardId}, 0)
     </insert>
 
     <update id="update" parameterType="com.eunhasoo.board.controller.dto.ArticleForm">
@@ -85,6 +92,7 @@
         <result property="createDate" column="createDate"/>
         <result property="title" column="title"/>
         <result property="commentCount" column="commentCount"/>
+        <result property="viewCount" column="viewCount"/>
         <association property="user" javaType="User">
             <id property="id" column="id"/>
             <result property="name" column="name"/>
@@ -98,6 +106,7 @@
         <result property="createDate" column="createDate"/>
         <result property="title" column="title"/>
         <result property="userId" column="userId"/>
+        <result property="viewCount" column="viewCount"/>
         <association property="user" javaType="User">
             <id property="id" column="id"/>
             <result property="loginId" column="loginId"/>

@@ -13,4 +13,5 @@ public class SearchResult {
     private String userName;
     private String title;
     private String body;
+    private int viewCount;
 }

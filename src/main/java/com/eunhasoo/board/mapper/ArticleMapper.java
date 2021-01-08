@@ -18,4 +18,5 @@ public interface ArticleMapper {
     int update(ArticleForm form);
     int delete(int articleId);
     List<SearchResult> findByQueries(SearchQueries query);
+    void countView(int articleId);
 }

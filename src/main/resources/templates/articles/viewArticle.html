@@ -20,26 +20,25 @@
               method="POST" class="delete_form" th:action="@{/article/delete/{id}(id=${article.id})}">
             <input type="submit" class="btn btn-outline-danger btn-sm delete_btn"  value="삭제">
             <a th:href="@{/article/edit/{id}(id=${article.id})}" role="button" class="btn btn-outline-secondary btn-sm">수정</a>
-            <a href="/" role="button" class="btn btn-outline-dark btn-sm">목록</a>
+            <a th:href="@{/article/board/{id}(id=${article.board.id})}" role="button" class="btn btn-outline-dark btn-sm">목록</a>
         </form>
 
         <a th:if="!${#authorization.expression('hasRole(''ROLE_ADMIN'')')} and
-            ${article.user.loginId} != ${#authentication.getName()}" href="/" role="button" class="btn btn-outline-dark btn-sm">목록</a>
+            ${article.user.loginId} != ${#authentication.getName()}" th:href="@{/article/board/{id}(id=${article.board.id})}" role="button" class="btn btn-outline-dark btn-sm">목록</a>
     </div>
 
     <div id="info" class="mt-2">
         <div class="d-inline m-1">
-            <span>No.</span>
-            <span th:text="${article.no}"></span>
-        </div>
-
-        <div class="d-inline m-1">
-            <span>작성자:</span>
             <span th:text="${article.user.name}"></span>
         </div>
 
         <div class="d-inline m-1">
-            <span th:text="${#temporals.format(article.createDate, 'yy.MM.dd HH:mm')}"></span>
+            <span th:text="${#temporals.format(article.createDate, 'yy.MM.dd HH:mm')}" class="text-muted"></span>
+        </div>
+
+        <div class="d-inline m-1">
+            <span class="text-muted">조회 </span>
+            <span th:text="${article.viewCount}" class="text-info"></span>
         </div>
     </div>
 
